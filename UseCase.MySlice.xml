@@ -1,0 +1,8 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="UseCase-Member1" id="uc-m1">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="800" math="0" shadow="0">
+      <root>
+        <mxCell id="0" /><mxCell id="1" parent="0" />
+        <mxCell id="sys" value="Flight Reservation System" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;verticalAlign=top;fontStyle=1" vertex="1" parent="1"><mxGeometry x="300" y="60" width="500" height="620" as="geometry"/></mxCell>
+        <mxCell id="actC" value="Customer" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1"><mxGeometry x="100" y="260" width="60" height="120" as="geometry"/></mxCell>
+        <mxCell id="actA" value="Flight Agent" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fill
