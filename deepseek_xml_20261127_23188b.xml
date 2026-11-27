@@ -1,0 +1,89 @@
+<mxfile host="app.diagrams.net" version="24.0.0">
+  <diagram id="group11-fsm" name="Group 11 FSM">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Start -->
+        <mxCell id="start" value="Power On&#10;ControllerInit()" style="ellipse;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="480" y="40" width="160" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- OFF -->
+        <mxCell id="OFF" value="OFF&#10;DARK()&#10;T1CONbits.TON = 0&#10;(Idle until CN)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;" vertex="1" parent="1">
+          <mxGeometry x="460" y="160" width="200" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- OFF_BLINK -->
+        <mxCell id="OFF_BLINK" value="OFF_BLINK&#10;litPhase toggles every 50 ticks&#10;APPLY_OUTPUT(): requested = 100" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="320" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ON -->
+        <mxCell id="ON" value="ON&#10;APPLY_OUTPUT(): requested = knobPercent&#10;sampleDue every 5 ticks&#10;if (streaming) SendReading()" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="460" y="320" width="230" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- ON_BLINK -->
+        <mxCell id="ON_BLINK" value="ON_BLINK&#10;litPhase toggles every 50 ticks&#10;APPLY_OUTPUT(): requested = knobPercent&#10;(0 during dark half)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="760" y="320" width="240" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Notes -->
+        <mxCell id="note" value="Interrupt sources:&#10;_CNInterrupt (IFS1bits.CNIF): raw = BUTTON_MASK(PORTA, PORTB); settling[i] = DEBOUNCE_TICKS for changed bits; restarts T1CONbits.TON.&#10;_T1Interrupt (IFS0bits.T1IF): debounce, heldTicks, phaseTicks, sampleTicks; transitions on released mask.&#10;_T2Interrupt (IFS0bits.T2IF): highPhase ^= 1; PR2 = COUNTS_PER_PERCENT * (high ? applied : 100-applied) - 1; TMR2 = 0.&#10;&#10;PB1 long press (heldTicks &gt;= LONG_PRESS_TICKS): led2 ^= 1; applied = 101.&#10;PB3 release in ON / ON_BLINK: streaming ^= 1." style="shape=note;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#999999;align=left;verticalAlign=top;spacingLeft=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="480" width="1000" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Start -> OFF -->
+        <mxCell id="e_start_off" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="start" target="OFF">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- OFF -> ON (PB1 release) -->
+        <mxCell id="e_off_on" value="PB1 released&#10;state = ON; led2 = 0; sampleDue = 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="OFF" target="ON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ON -> OFF (PB1 short release) -->
+        <mxCell id="e_on_off" value="PB1 released&#10;heldTicks &lt; LONG_PRESS_TICKS&#10;state = OFF; streaming = 0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="ON" target="OFF">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ON -> ON_BLINK (PB2 release) -->
+        <mxCell id="e_on_onblink" value="PB2 released&#10;state = ON_BLINK; litPhase = 1; phaseTicks = 0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="ON" target="ON_BLINK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ON_BLINK -> ON (PB2 release) -->
+        <mxCell id="e_onblink_on" value="PB2 released&#10;state = ON; litPhase = 1; phaseTicks = 0" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="ON_BLINK" target="ON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- OFF -> OFF_BLINK (PB2 release) -->
+        <mxCell id="e_off_offblink" value="PB2 released&#10;state = OFF_BLINK; led2 = 0; litPhase = 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="OFF" target="OFF_BLINK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- OFF_BLINK -> OFF (PB2 release) -->
+        <mxCell id="e_offblink_off" value="PB2 released&#10;state = OFF" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="OFF_BLINK" target="OFF">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Self loops -->
+        <mxCell id="l_off" value="any CN wake / debounce settle" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="OFF" target="OFF">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l_offblink" value="phaseTicks &gt;= BLINK_TICKS&#10;litPhase ^= 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="OFF_BLINK" target="OFF_BLINK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l_on" value="sampleTicks &gt;= SAMPLE_TICKS&#10;sampleDue = 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="ON" target="ON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="l_onblink" value="phaseTicks &gt;= BLINK_TICKS&#10;litPhase ^= 1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;" edge="1" parent="1" source="ON_BLINK" target="ON_BLINK">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
